@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Оранжерея помех</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Оранжерея помех</h1>
+    <p>Посади звук, и из него вырастет растение. Оно будет немного похоже на звук и немного на что-то своё. Его можно подкормить другим звуком и послушать, как оно поёт. Звук остаётся на твоём устройстве.</p>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <div class="group">
+        <h2>Что сделать со звуком</h2>
+        <div class="seg" id="modes">
+          <button data-v="plant" aria-pressed="true">Посадить новое</button>
+          <button data-v="feed" aria-pressed="false">Подкормить это</button>
+        </div>
+      </div>
+
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept="audio/*,.mp3,.wav,.ogg,.m4a,.flac">
+        <strong id="dropTitle">Выбери аудиофайл</strong>
+        <span>mp3 или wav, можно перетащить сюда</span>
+      </label>
+      <button class="btn" id="mic">Записать с микрофона</button>
+
+      <div class="group">
+        <h2>Растение</h2>
+        <div class="actions">
+          <button class="btn" id="again">Вырастить иначе</button>
+          <button class="btn" id="listen">Послушать растение</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Голос</h2>
+        <div class="knobs" id="voiceKnobs"></div>
+        <div class="knob-row">
+          <label class="check"><input type="checkbox" id="reverse"> Задом наперёд</label>
+          <button class="link" id="voiceReset">Сбросить</button>
+        </div>
+      </div>
+
+      <div class="group">
+        <h2>Вид</h2>
+        <div class="knobs" id="viewKnobs"></div>
+      </div>
+
+      <div class="group">
+        <h2>Палитра</h2>
+        <div class="swatches" id="palettes"></div>
+      </div>
+
+      <div class="group">
+        <h2>Формат</h2>
+        <div class="seg" id="formats">
+          <button data-v="square" aria-pressed="true">Квадрат</button>
+          <button data-v="wide" aria-pressed="false">16:9 для слайда</button>
+        </div>
+      </div>
+
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="caption" checked> Название на картинке</label>
+        <label class="check"><input type="checkbox" id="transparent"> Прозрачный фон</label>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="save">Сохранить картинку</button>
+        <button class="btn" id="saveVoice">Сохранить голос (WAV)</button>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <div class="frame" id="frame"><canvas id="cv" role="img" aria-label="Растение, выращенное из звука"></canvas></div>
+      <p class="note" id="note" aria-live="polite"></p>
+
+      <section class="passport" aria-label="Паспорт растения">
+        <p class="latin" id="pLatin"></p>
+        <p class="ru" id="pRu"></p>
+        <p class="desc" id="pDesc"></p>
+        <dl class="stats" id="stats"></dl>
+      </section>
+
+      <details class="how">
+        <summary>Как звук становится растением</summary>
+        <ul>
+          <li>Стебель — это время: начало звука внизу, конец наверху.</li>
+          <li>Громкость → высота растения, толщина стебля, размер листьев.</li>
+          <li>Высота тона → цвет цветов и угол веток.</li>
+          <li>Шумность → колючесть, форма листьев и мутации.</li>
+          <li>Низкие частоты → корни.</li>
+          <li>Резкие всплески → цветы.</li>
+          <li>Длительность → сколько раз растение ветвится.</li>
+          <li>Подкормка добавляет поколение: растение перерастает, может мутировать, а голос становится глубже.</li>
+          <li>Голос растения — твой звук, только медленнее, с эхом и фильтром. Ручки в разделе «Голос» меняют его прямо во время игры.</li>
+          <li>Ручки «Вид»: абстракция превращает части растения в геометрию, распад отрывает их от стеблей, сдвиг цвета смещает заливку, как в ризографии.</li>
+          <li>Ручку можно крутить мышью вверх-вниз, колесом или стрелками. Двойной клик возвращает исходное значение.</li>
+        </ul>
+      </details>
+    </main>
+  </div>
+
+  <section class="shelf">
+    <h2>Твоя оранжерея</h2>
+    <p>Растения живут здесь, пока открыта страница.</p>
+    <div class="shelf-grid" id="shelf"></div>
+  </section>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
