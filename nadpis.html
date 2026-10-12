@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Вывески · Цветочный магазин «Помеха»</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Цветочный магазин «Помеха»</h1>
+    <p>Слово становится растением.</p>
+  </header>
+  <nav class="tabs">
+    <a href="index.html">Растения из звука</a>
+    <a href="nadpis.html" aria-current="page">Вывески</a>
+    <a href="foto.html">Фото</a>
+  </nav>
+
+  <div class="layout">
+    <aside class="panel">
+      <label class="field">
+        <span>Текст</span>
+        <input type="text" id="text" maxlength="24" autocomplete="off" spellcheck="false">
+      </label>
+
+      <div class="group">
+        <h2>Шрифт</h2>
+        <div class="seg" id="fontStyle">
+          <button data-v="regular" aria-pressed="true">Обычный</button>
+          <button data-v="bold" aria-pressed="false">Жирный</button>
+          <button data-v="italic" aria-pressed="false">Курсив</button>
+        </div>
+      </div>
+
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="caps"> Заглавные</label>
+        <label class="check"><input type="checkbox" id="sym" checked> Симметрия</label>
+      </div>
+
+      <button class="btn" id="again">Иначе</button>
+
+      <div class="group">
+        <h2>Рост</h2>
+        <div class="knobs" id="knobs"></div>
+      </div>
+
+      <div class="group">
+        <h2>Фон</h2>
+        <div class="seg" id="palettes"></div>
+      </div>
+
+      <div class="group">
+        <h2>Цвет</h2>
+        <div class="seg" id="colorMode">
+          <button data-v="mono" aria-pressed="true">Ч/б</button>
+          <button data-v="color" aria-pressed="false">Цветной</button>
+        </div>
+        <button class="link" id="reshuffle" hidden>Другие цвета</button>
+      </div>
+
+      <div class="checks">
+        <label class="check"><input type="checkbox" id="transparent"> Без фона</label>
+      </div>
+
+      <div class="group">
+        <h2>Сохранить</h2>
+        <div class="actions row">
+          <button class="btn primary" id="savePng">PNG</button>
+          <button class="btn" id="saveSvg">SVG</button>
+        </div>
+        <p class="hint">SVG можно перетащить в Figma.</p>
+      </div>
+    </aside>
+
+    <main class="stage">
+      <div class="frame" id="frame"><canvas id="cv" role="img" aria-label="Надпись, проросшая растением"></canvas></div>
+      <p class="note" id="note" aria-live="polite"></p>
+    </main>
+  </div>
+</div>
+
+<script src="nadpis.js"></script>
+</body>
+</html>

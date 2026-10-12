@@ -85,4 +85,16 @@ button:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
 .knob-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:12px}
 .link{font:inherit;font-size:13px;background:none;border:0;padding:4px 0;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
+.tabs{display:flex;gap:24px;margin:-22px 0 32px;font-size:14px}
+.tabs a{color:var(--muted);text-decoration:none;padding-bottom:2px;border-bottom:1px solid transparent}
+.tabs a:hover{color:var(--ink)}
+.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--ink)}
+.field{display:flex;flex-direction:column;gap:8px}
+.field span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.field input{font:inherit;font-size:20px;padding:8px 10px;border:1px solid var(--ink);border-radius:0;background:transparent;color:var(--ink);width:100%}
+.field input:focus{outline:1px solid var(--ink);outline-offset:2px}
+.frame.empty{min-height:360px}
+.frame.empty canvas{display:none}
+.hint{font-size:12px;font-style:italic;color:var(--muted);margin:8px 0 0}
+
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}

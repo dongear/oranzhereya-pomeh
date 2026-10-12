@@ -575,7 +575,7 @@ function encodeWav(buf){
 }
 
 /* ---------- состояние и отрисовка ---------- */
-const state={palette:"paper",format:"square",caption:true,transparent:false,mode:"plant",rag:0.5,drift:0.15,splat:0.5,pix:0.43};
+const state={palette:"paper",format:"square",caption:true,transparent:false,mode:"plant",colorMode:"mono",colorSeed:0,rag:0.5,drift:0.15,splat:0.5,pix:0.43};
 const plants=[];let current=null,uid=0,busy=false,model=null,anim=null;
 const cv=$("cv"),frame=$("frame");
 const reduceMotion=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -610,6 +610,19 @@ function noiseTile(){
   return NZ=a;
 }
 const hexRGB=h=>{const m=/^#?([0-9a-f]{6})$/i.exec(h);const v=m?parseInt(m[1],16):0;return [v>>16&255,v>>8&255,v&255]};
+// болотная палитра: только тёмные, грязные цвета
+const SWAMP=["#5A1A22","#3F1418","#23361F","#2F4A23","#3E4A1E","#4D4F22","#1C2A44","#18303A","#1E3B36",
+  "#4A2E1A","#3A2A20","#5E3A1C","#3B1E33","#6A3418","#2B302A","#34402E"].map(hexRGB);
+// цветные пятна: случайные точки, у каждой цвет из 3–5 болотных, пиксель берёт цвет ближайшей;
+// координаты трясёт шум, поэтому границы пятен зернистые, как у ризографии. На чёрном фоне цвета светлее
+function colorField(w,h,seed,dark){
+  const r=mulberry32(seed),n=5+Math.floor(r()*8),pool=SWAMP.slice(),pal=[],pts=[],cols=[];
+  for(let k=0,m=3+Math.floor(r()*3);k<m;k++)pal.push(pool.splice(Math.floor(r()*pool.length),1)[0]);
+  for(let k=0;k<n;k++){pts.push([r()*w,r()*h]);const c=pal[Math.floor(r()*pal.length)];cols.push(dark?c.map(v=>Math.round(v+(255-v)*0.38)):c)}
+  const N=noiseTile(),amp=Math.max(w,h)*0.07;
+  return {cols,at(x,y){const jx=x+(N[((y>>1)&511)<<9|((x>>1)+57&511)]-128)/128*amp,jy=y+(N[((x>>1)+301&511)<<9|((y>>1)&511)]-128)/128*amp;
+    let b=0,bd=Infinity;for(let k=0;k<pts.length;k++){const dx=pts[k][0]-jx,dy=pts[k][1]-jy,dd=dx*dx+dy*dy;if(dd<bd){bd=dd;b=k}}return b}};
+}
 const mk=()=>document.createElement("canvas");
 // размер пикселя: ручка 0..1 → 1..8 точек холста
 const pixSize=()=>1+Math.round(state.pix*7);
@@ -633,6 +646,7 @@ function paint(M,T){
   const img=o.getImageData(0,0,w,h),d=img.data,mean=bc.getImageData(0,0,w,h).data,N=noiseTile();
   const gray=new Uint8Array(w*h);for(let k=0,i=0;k<gray.length;k++,i+=4)gray[k]=d[i];
   const g=state.rag,bias=M.plant.G.muts.has("pale")?35:0,ink=hexRGB(M.C.ink),bg=hexRGB(M.C.bg),tr=state.transparent;
+  const cf=state.colorMode==="color"?colorField(w,h,hashInts(M.plant.G.geo,state.colorSeed*977+1),state.palette==="night"):null;
   const deep=48+g*35,edge=4+(1-g)*6,nAmp=16+g*30,shake=0.4+g*1.4;
   for(let y=0,i=0,k=0;y<h;y++){const row=(y&511)<<9,row2=((y+211)&511)<<9;
     for(let x=0;x<w;x++,i+=4,k++){
@@ -640,8 +654,9 @@ function paint(M,T){
       const sx=clamp(x+Math.round((N[row|((x+97)&511)]-128)/128*shake),0,w-1),sy=clamp(y+Math.round((N[row2|((x+31)&511)]-128)/128*shake),0,h-1);
       const v=gray[sy*w+sx]+bias,nz=(N[row|(x&511)]-128)/128,m=mean[i];
       const on=v<254&&(v<deep+nz*40||v-m<-edge+nz*nAmp*0.5||(v<242&&nz<-0.62+(242-v)/105));
-      if(tr){d[i]=ink[0];d[i+1]=ink[1];d[i+2]=ink[2];d[i+3]=on?255:0}
-      else{const c=on?ink:bg;d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=255}}}
+      const fg=on&&cf?cf.cols[cf.at(x,y)]:ink;
+      if(tr){d[i]=fg[0];d[i+1]=fg[1];d[i+2]=fg[2];d[i+3]=on?255:0}
+      else{const c=on?fg:bg;d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];d[i+3]=255}}}
   o.putImageData(img,0,0);
   if(cv.width!==M.W||cv.height!==M.H){cv.width=M.W;cv.height=M.H}
   const ctx=cv.getContext("2d");
@@ -817,7 +832,9 @@ Object.entries(PALETTES).forEach(([k,p])=>{
 function bindSeg(el,key,after){el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.disabled)return;
   state[key]=b.dataset.v;el.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));after()})}
 const redraw=()=>{if(current)show(current,false)};
-bindSeg(palWrap,"palette",redraw);bindSeg($("formats"),"format",redraw);
+bindSeg(palWrap,"palette",redraw);
+bindSeg($("colorMode"),"colorMode",()=>{$("reshuffle").hidden=state.colorMode!=="color";redraw()});
+$("reshuffle").addEventListener("click",()=>{state.colorSeed++;redraw()});bindSeg($("formats"),"format",redraw);
 bindSeg($("modes"),"mode",()=>{$("dropTitle").textContent=state.mode==="feed"?"Звук для подкормки":"Загрузить звук";
   setNote(state.mode==="feed"?"Следующий звук подкормит этот образец.":"Следующий звук станет новым образцом.")});
 $("caption").addEventListener("change",e=>{state.caption=e.target.checked;redraw()});

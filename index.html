@@ -12,6 +12,11 @@
     <h1>Цветочный магазин «Помеха»</h1>
     <p>Звук становится растением. Файлы не покидают браузер.</p>
   </header>
+  <nav class="tabs">
+    <a href="index.html" aria-current="page">Растения из звука</a>
+    <a href="nadpis.html">Вывески</a>
+    <a href="foto.html">Фото</a>
+  </nav>
 
   <div class="layout">
     <aside class="panel">
@@ -49,6 +54,15 @@
       <div class="group">
         <h2>Фон</h2>
         <div class="seg" id="palettes"></div>
+      </div>
+
+      <div class="group">
+        <h2>Цвет</h2>
+        <div class="seg" id="colorMode">
+          <button data-v="mono" aria-pressed="true">Ч/б</button>
+          <button data-v="color" aria-pressed="false">Цветной</button>
+        </div>
+        <button class="link" id="reshuffle" hidden>Другие цвета</button>
       </div>
 
       <div class="group">
