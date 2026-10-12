@@ -879,7 +879,7 @@ $("voiceReset").addEventListener("click",()=>{if(!current)return;current.V=voice
 
 let viewPending=false;
 const redrawSoon=()=>{if(viewPending)return;viewPending=true;requestAnimationFrame(()=>{viewPending=false;redraw()});setTimeout(()=>{if(viewPending){viewPending=false;redraw()}},120)};
-[{key:"rag",label:"Грязь"},{key:"drift",label:"Распад"},{key:"splat",label:"Плотность"},{key:"pix",label:"Пиксель",fmt:v=>(1+Math.round(v*7))+" px"}].forEach(k=>{
+[{key:"rag",label:"Шум"},{key:"drift",label:"Распад"},{key:"splat",label:"Плотность"},{key:"pix",label:"Пиксель",fmt:v=>(1+Math.round(v*7))+" px"}].forEach(k=>{
   const kn=makeKnob($("viewKnobs"),{label:k.label,min:0,max:1,fmt:k.fmt||pct(1),onInput:v=>{state[k.key]=v;redrawSoon()}});kn.set(state[k.key],true)});
 
 /* ---------- старт ---------- */
