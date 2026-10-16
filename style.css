@@ -98,3 +98,5 @@ button:focus-visible{outline:1px solid var(--ink);outline-offset:3px}
 .hint{font-size:12px;font-style:italic;color:var(--muted);margin:8px 0 0}
 
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.sign{position:fixed;right:16px;bottom:12px;font-size:13px;font-style:italic;color:var(--ink);pointer-events:none;z-index:10}
